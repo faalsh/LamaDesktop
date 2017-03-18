@@ -1,0 +1,30 @@
+.createList-enter {
+  transform: scale(0);
+  opacity: 0.01;
+}
+
+.createList-enter.createList-enter-active {
+  transform: scale(1);
+  opacity: 1;
+  transition: all 500ms ease-in;
+}
+
+.createList-leave {
+  opacity: 1;
+}
+
+.createList-leave.createList-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
+
+.createList-appear {
+  transform: scale(0);
+  opacity: 0.01;
+}
+
+.createList-appear.createList-appear-active {
+  transform: scale(1);
+  opacity: 1;
+  transition: all 200ms ease-in;
+}
