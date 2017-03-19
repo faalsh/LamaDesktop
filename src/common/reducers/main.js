@@ -83,7 +83,6 @@ export default function reducer(state =initialState, action){
 		}
 		case 'MOVE_ITEM_TO_LIST': {
 			const {boardId, dragListId, hoverListId, dragItemId} = action.payload
-
 			return {...state, boards: state.boards.map((board) => {
 				if(board.id !== boardId) return board
 				const dragList = _.find(board.doc.lists, {listId: dragListId})
@@ -96,8 +95,10 @@ export default function reducer(state =initialState, action){
 						return {...list, items: remainingItems}
 					} else if (list.listId === hoverListId) {
 						dragItem.itemIndex = list.items.length
-						const newItems = list.items.push(dragItem)
-						return {...list, items:list.items}
+						let newItems = list.items.slice()
+						newItems.push(dragItem)
+						console.log(newItems);
+						return {...list, items:newItems}
 					} else {
 						return {...list}
 					}

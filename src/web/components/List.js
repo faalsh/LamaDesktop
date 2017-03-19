@@ -106,7 +106,7 @@ class List extends React.Component {
           justifyContent: 'space-between'
         }
 
-        const titleDisplay = <div onClick={this.toggleMode.bind(this)} style={titleStyle}>{list.listTitle}</div>
+        const titleDisplay = <div onClick={this.toggleMode.bind(this)} style={titleStyle}>{list.listTitle} {list.listId}</div>
         const titleEdit =  <div><input autoFocus style={editInputStyle} onChange={this.onChange.bind(this)}
                         onKeyDown={this.handleKeyDown.bind(this)} onBlur={this.handleOnBlur.bind(this)} value={this.state.title}/></div>
         const title = this.state.edit ? titleEdit:titleDisplay
@@ -173,6 +173,14 @@ const listTarget = {
     }
   },
   drop(props, monitor, component){
+    // const boardId = props.boardId
+    // const dragListId = monitor.getItem().listId
+    // const hoverListId = props.listId
+    // const dragItemId = monitor.getItem().itemId
+    //
+    // if(monitor.getItemType() === 'Item' && dragListId !== hoverListId) {
+    //   props.actions.moveItemToList(boardId, dragListId, hoverListId, dragItemId)
+    // }
     props.actions.saveBoard(_.find(props.boards, {id:props.boardId}).doc)
   }
 }
