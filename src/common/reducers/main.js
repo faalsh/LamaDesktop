@@ -82,22 +82,22 @@ export default function reducer(state =initialState, action){
 			})}
 		}
 		case 'MOVE_ITEM_TO_LIST': {
-			const {boardId, dragListId, hoverListId, dragItemId} = action.payload
+			const {boardId, dragListId, hoverListId, dragItemId, item} = action.payload
 			return {...state, boards: state.boards.map((board) => {
 				if(board.id !== boardId) return board
-				const dragList = _.find(board.doc.lists, {listId: dragListId})
-				let dragItem = _.find(dragList.items, {itemId: dragItemId})
+				// const dragList = _.find(board.doc.lists, {listId: dragListId})
+				// let dragItem = _.find(dragList.items, {itemId: dragItemId})
 				return {...board, doc:{...board.doc, lists: board.doc.lists.map((list) => {
 					if(list.listId === dragListId){
-						const remainingItems = _.remove(list.items, (item) => {
-							return item.itemId !== dragItemId
+						let items = list.items.slice()
+						_.remove(items, (item) => {
+							return item.itemId === dragItemId
 						})
-						return {...list, items: remainingItems}
+						return {...list, items: items}
 					} else if (list.listId === hoverListId) {
-						dragItem.itemIndex = list.items.length
+						item.itemIndex = list.items.length
 						let newItems = list.items.slice()
-						newItems.push(dragItem)
-						console.log(newItems);
+						newItems.push(item)
 						return {...list, items:newItems}
 					} else {
 						return {...list}

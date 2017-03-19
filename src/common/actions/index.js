@@ -1,6 +1,6 @@
 import PouchDB from 'pouchdb'
 import _ from 'lodash'
-
+import store from '../store'
 const db = new PouchDB('lama', {auto_compaction: true})
 
 // temp
@@ -149,12 +149,19 @@ export const saveBoard = (board) => {
   }
 }
 
+export const saveBoardEx = (boardId) => {
+  return dispach => {
+    const board = _.find(store.getState().main.boards, {id:boardId}).doc
+    db.put(board).then(() =>  dispach({type: 'SAVE_BOARD'}))
+  }
+}
+
 export const swapLists = (boardId, dragListId, hoverListId) => {
   return {type: 'SWAP_LISTS', payload:{boardId, dragListId, hoverListId}}
 }
 
-export const moveItemToList = (boardId, dragListId, hoverListId, dragItemId) => {
-  return {type: 'MOVE_ITEM_TO_LIST', payload: {boardId, dragListId, hoverListId, dragItemId}}
+export const moveItemToList = (boardId, dragListId, hoverListId, dragItemId, item) => {
+  return {type: 'MOVE_ITEM_TO_LIST', payload: {boardId, dragListId, hoverListId, dragItemId, item}}
 }
 
 export const swapItems = (boardId, hoverListId, dragItemId, hoverItemId) => {

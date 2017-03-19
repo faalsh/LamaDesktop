@@ -159,29 +159,25 @@ const listTarget = {
         props.actions.swapLists(boardId, dragListId, hoverListId)
       }
 
-      } else if(monitor.getItemType() === 'Item'){
-        const boardId = props.boardId
-        const dragListId = monitor.getItem().listId
-        const hoverListId = props.listId
-        const dragItemId = monitor.getItem().itemId
-
-        if(dragListId !== hoverListId) {
-          if(monitor.getItem().done) return
-          monitor.getItem().done = true
-          props.actions.moveItemToList(boardId, dragListId, hoverListId, dragItemId)
-        }
-    }
+      } 
   },
   drop(props, monitor, component){
-    // const boardId = props.boardId
-    // const dragListId = monitor.getItem().listId
-    // const hoverListId = props.listId
-    // const dragItemId = monitor.getItem().itemId
-    //
-    // if(monitor.getItemType() === 'Item' && dragListId !== hoverListId) {
-    //   props.actions.moveItemToList(boardId, dragListId, hoverListId, dragItemId)
-    // }
-    props.actions.saveBoard(_.find(props.boards, {id:props.boardId}).doc)
+    const boardId = props.boardId
+    const dragListId = monitor.getItem().listId
+    const dropListId = props.listId
+    const dragItemId = monitor.getItem().itemId
+
+    if(monitor.getItemType() === 'Item' && dragListId !== dropListId) {
+      const board = _.find(props.boards, {id:props.boardId})
+      const list = _.find(board.doc.lists, {listId:dragListId})
+      const item = _.find(list.items, {itemId: dragItemId})
+
+      props.actions.moveItemToList(boardId, dragListId, dropListId, dragItemId, item)
+
+    }
+
+    props.actions.saveBoardEx(props.boardId)
+
   }
 }
 

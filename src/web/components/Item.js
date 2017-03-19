@@ -146,8 +146,9 @@ const itemTarget = {
     const dragItemId = monitor.getItem().itemId
     const hoverItemId = props.itemId
     const hoverListId = props.listId
-
-    if(dragItemId !== hoverItemId) {
+    // swap item not working
+    // move duplicate item
+    if(dragItemId !== hoverItemId && hoverListId === dragListId) {
       props.actions.swapItems(boardId, hoverListId, dragItemId, hoverItemId)
     }
   }
