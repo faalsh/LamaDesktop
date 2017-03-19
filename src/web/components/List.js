@@ -6,7 +6,6 @@ import { bindActionCreators } from 'redux'
 import CreateItem from './CreateItem'
 import {DragSource, DropTarget} from 'react-dnd'
 import _ from 'lodash'
-// import {sort} from '../../common/utils'
 import ContextMenu from './ContextMenu'
 import ContextMenuItem from './ContextMenuItem'
 
@@ -143,7 +142,8 @@ const listSource = {
       boardId: props.boardId,
       listId: props.listId,
       listIndex: props.list.listIndex,
-      items: props.list.items
+      items: props.list.items,
+      done: false
     }
   }
 }
@@ -160,20 +160,19 @@ const listTarget = {
       }
 
       } else if(monitor.getItemType() === 'Item'){
-        if(monitor.getItem().stop) return
         const boardId = props.boardId
         const dragListId = monitor.getItem().listId
         const hoverListId = props.listId
         const dragItemId = monitor.getItem().itemId
-        // const done = props.list.items && props.list.items[dragItemId]
-        // if(dragListId !== hoverListId && !done) {
-          monitor.getItem().stop = true
+
+        if(dragListId !== hoverListId) {
+          if(monitor.getItem().done) return
+          monitor.getItem().done = true
           props.actions.moveItemToList(boardId, dragListId, hoverListId, dragItemId)
-        // }
+        }
     }
   },
   drop(props, monitor, component){
-    console.log(props.boards);
     props.actions.saveBoard(_.find(props.boards, {id:props.boardId}).doc)
   }
 }

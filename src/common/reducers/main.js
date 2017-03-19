@@ -64,6 +64,46 @@ export default function reducer(state =initialState, action){
 				})}}
 			})}
 		}
+		case 'SWAP_ITEMS': {
+			const {boardId, hoverListId, dragItemId, hoverItemId} = action.payload
+
+			return {...state, boards: state.boards.map((board) => {
+				if(board.id !== boardId) return board
+				return {...board, doc:{...board.doc, lists: board.doc.lists.map((list) =>{
+					if(list.listId !== hoverListId) return list
+					const dragItemIndex = _.find(list.items, {itemId: dragItemId}).itemIndex
+					const hoverItemIndex = _.find(list.items, {itemId: hoverItemId}).itemIndex
+					return {...list, items: list.items.map((item) =>{
+						if(item.itemId === dragItemId) return {...item, itemIndex: hoverItemIndex}
+						else if (item.itemId === hoverItemId) return {...item, itemIndex: dragItemIndex}
+						else return {...item}
+					})}
+				})}}
+			})}
+		}
+		case 'MOVE_ITEM_TO_LIST': {
+			const {boardId, dragListId, hoverListId, dragItemId} = action.payload
+
+			return {...state, boards: state.boards.map((board) => {
+				if(board.id !== boardId) return board
+				const dragList = _.find(board.doc.lists, {listId: dragListId})
+				let dragItem = _.find(dragList.items, {itemId: dragItemId})
+				return {...board, doc:{...board.doc, lists: board.doc.lists.map((list) => {
+					if(list.listId === dragListId){
+						const remainingItems = _.remove(list.items, (item) => {
+							return item.itemId !== dragItemId
+						})
+						return {...list, items: remainingItems}
+					} else if (list.listId === hoverListId) {
+						dragItem.itemIndex = list.items.length
+						const newItems = list.items.push(dragItem)
+						return {...list, items:list.items}
+					} else {
+						return {...list}
+					}
+				})}}
+			})}
+		}
 
 		default:
 			return state;

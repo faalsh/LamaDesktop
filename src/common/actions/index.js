@@ -142,66 +142,23 @@ export const selectBoard = (boardId) => {
 }
 
 export const saveBoard = (board) => {
-  console.log(board);
   return dispach => {
     db.put(board).then(() =>  dispach({type: 'SAVE_BOARD'})).catch((e) => {
       console.log('error ',e);
     })
   }
 }
+
 export const swapLists = (boardId, dragListId, hoverListId) => {
   return {type: 'SWAP_LISTS', payload:{boardId, dragListId, hoverListId}}
 }
 
 export const moveItemToList = (boardId, dragListId, hoverListId, dragItemId) => {
-  return dispatch => {
-    findBoard(boardId).then((board) => {
-
-    })
-    //   ref.child('boards').child(boardId).child('lists').child(dragListId).child('items').child(dragItemId).once('value').then(snapshot => {
-    //   let item = snapshot.val()
-    //   if(item) {
-    //     ref.child('boards').child(boardId).child('lists').child(dragListId).child('items').child(dragItemId).remove()
-    //     item.itemIndex = 1000
-    //     ref.child('boards').child(boardId).child('lists').child(hoverListId).child('items').child(dragItemId).set(item)
-    //     updateItemIndexes(boardId, dragListId)
-    //     updateItemIndexes(boardId, hoverListId)
-    //   }
-    //   dispatch({type: 'MOVE_ITEM_TO_LIST'})
-    // })
-  }
+  return {type: 'MOVE_ITEM_TO_LIST', payload: {boardId, dragListId, hoverListId, dragItemId}}
 }
 
-
 export const swapItems = (boardId, hoverListId, dragItemId, hoverItemId) => {
-  return dispatch => {
-
-    findBoard(boardId).then((board) => {
-      _.each(board.lists, (list) => {
-        if(list.listId === hoverListId) {
-          let dragItem = _.find(list.items, {itemId: dragItemId})
-          let hoverItem = _.find(list.items, {itemId: hoverItemId})
-          const dragItemIndex = dragItem.itemIndex
-          const hoverItemIndex = hoverItem.itemIndex
-          dragItem.itemIndex = hoverItemIndex
-          hoverItem.itemIndex = dragItemIndex
-          db.put(board).then(() => dispatch({type:'SWAP_ITEMS'}))
-          return false
-        }
-      })
-    })
-    // ref.child('boards').child(boardId).child('lists').child(hoverListId).child('items')
-    //   .once('value').then(snapshot => {
-    //     const items = snapshot.val()
-    //     const dragItemIndex = items[dragItemId].itemIndex
-    //     const hoverItemIndex = items[hoverItemId].itemIndex
-    //     let updates = {}
-    //     updates['boards/'+boardId+'/lists/'+hoverListId+'/items/'+dragItemId+'/itemIndex'] = hoverItemIndex
-    //     updates['boards/'+boardId+'/lists/'+hoverListId+'/items/'+hoverItemId+'/itemIndex'] = dragItemIndex
-    //     ref.update(updates)
-    //     dispatch({type:'SWAP_ITEMS'})
-    // })
-  }
+  return {type: 'SWAP_ITEMS', payload:{boardId, hoverListId, dragItemId, hoverItemId}}
 }
 
 const updateItemIndexes = (boardId, listId) => {
