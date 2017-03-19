@@ -141,18 +141,20 @@ export const selectBoard = (boardId) => {
   return ({type:'SELECT_BOARD', payload: boardId})
 }
 
-export const saveBoard = (board) => {
-  return dispach => {
-    db.put(board).then(() =>  dispach({type: 'SAVE_BOARD'})).catch((e) => {
-      console.log('error ',e);
-    })
-  }
-}
-
-export const saveBoardEx = (boardId) => {
+export const saveBoard = (boardId) => {
   return dispach => {
     const board = _.find(store.getState().main.boards, {id:boardId}).doc
     db.put(board).then(() =>  dispach({type: 'SAVE_BOARD'}))
+  }
+}
+
+export const saveBoards = (boardId1, boardId2) => {
+  return dispach => {
+    const board1 = _.find(store.getState().main.boards, {id:boardId1}).doc
+    const board2 = _.find(store.getState().main.boards, {id:boardId2}).doc
+
+    db.bulkDocs([board1, board2]).then(() => dispach({type:'SAVE_BOARDS'}))
+
   }
 }
 
@@ -234,6 +236,7 @@ export function updateItem(boardId, listId, itemId, itemText) {
 }
 
 export function swapBoards(dragBoardId, hoverBoardId) {
+  return {type: 'SWAP_BOARDS', payload:{dragBoardId, hoverBoardId}}
 
   // ref.child('boards').once('value').then(snapshot => {
   //   const boards = snapshot.val()

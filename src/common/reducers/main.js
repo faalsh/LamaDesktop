@@ -15,7 +15,8 @@ export default function reducer(state =initialState, action){
     case 'FETCH_DATA': {
 			let selectedBoard = state.selectedBoard
 			if(!selectedBoard && action.payload.length > 0) {
-				selectedBoard = action.payload[0].id
+				const firstBoard = _.find(action.payload, {doc: {boardIndex:0}})
+				selectedBoard = firstBoard.id
 			}
       return {...state, boards:action.payload, selectedBoard}
     }
@@ -85,8 +86,6 @@ export default function reducer(state =initialState, action){
 			const {boardId, dragListId, hoverListId, dragItemId, item} = action.payload
 			return {...state, boards: state.boards.map((board) => {
 				if(board.id !== boardId) return board
-				// const dragList = _.find(board.doc.lists, {listId: dragListId})
-				// let dragItem = _.find(dragList.items, {itemId: dragItemId})
 				return {...board, doc:{...board.doc, lists: board.doc.lists.map((list) => {
 					if(list.listId === dragListId){
 						let items = list.items.slice()
@@ -103,6 +102,19 @@ export default function reducer(state =initialState, action){
 						return {...list}
 					}
 				})}}
+			})}
+		}
+		case 'SWAP_BOARDS': {
+			const {dragBoardId, hoverBoardId} = action.payload
+			const dragBoardIndex = _.find(state.boards, {id: dragBoardId}).doc.boardIndex
+			const hoverBoardIndex = _.find(state.boards, {id: hoverBoardId}).doc.boardIndex
+
+			return {...state, boards: state.boards.map((board) => {
+				if (board.id === dragBoardId)
+					return {...board, doc:{...board.doc, boardIndex: hoverBoardIndex}}
+				else if (board.id === hoverBoardId)
+					return {...board, doc:{...board.doc, boardIndex: dragBoardIndex}}
+				else return board
 			})}
 		}
 

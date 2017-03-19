@@ -70,6 +70,9 @@ const boardListItemTarget = {
 
     if(dragBoardId !== hoverBoardId) {
       props.actions.swapBoards(dragBoardId, hoverBoardId)
+      console.log('check',dragBoardId, hoverBoardId);
+      props.actions.saveBoards(dragBoardId, hoverBoardId)
+
     }
   }
 }

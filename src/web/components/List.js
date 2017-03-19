@@ -61,7 +61,6 @@ class List extends React.Component {
     render() {
     	const {boardId, list, listId, actions, connectDragSource,
         isDragging, connectDropTarget, canDrop, isOver} = this.props
-        console.log(isOver, listId);
       const opacity = isDragging? 0.3:1
     	const style = {
         position: 'relative',
@@ -144,8 +143,7 @@ const listSource = {
       boardId: props.boardId,
       listId: props.listId,
       listIndex: props.list.listIndex,
-      items: props.list.items,
-      done: false
+      items: props.list.items
     }
   }
 }
@@ -177,7 +175,7 @@ const listTarget = {
 
     }
 
-    props.actions.saveBoardEx(props.boardId)
+    props.actions.saveBoard(props.boardId)
 
   }
 }
