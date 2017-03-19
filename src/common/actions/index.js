@@ -141,22 +141,16 @@ export const selectBoard = (boardId) => {
   return ({type:'SELECT_BOARD', payload: boardId})
 }
 
-
-export const swapLists = (boardId, dragListId, hoverListId) => {
-  return dispatch => {
-    findBoard(boardId).then((board) => {
-
-      let dragList = _.find(board.lists, {listId: dragListId})
-      let hoverList = _.find(board.lists, {listId: hoverListId})
-      const dragIndex = dragList.listIndex
-      const hoverIndex = hoverList.listIndex
-
-      dragList.listIndex = hoverIndex
-      hoverList.listIndex = dragIndex
-
-      db.put(board).then(() => dispatch({type: 'SWAP_LISTS'}))
+export const saveBoard = (board) => {
+  console.log(board);
+  return dispach => {
+    db.put(board).then(() =>  dispach({type: 'SAVE_BOARD'})).catch((e) => {
+      console.log('error ',e);
     })
   }
+}
+export const swapLists = (boardId, dragListId, hoverListId) => {
+  return {type: 'SWAP_LISTS', payload:{boardId, dragListId, hoverListId}}
 }
 
 export const moveItemToList = (boardId, dragListId, hoverListId, dragItemId) => {

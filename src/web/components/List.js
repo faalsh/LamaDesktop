@@ -107,8 +107,6 @@ class List extends React.Component {
           justifyContent: 'space-between'
         }
 
-
-        // const sortedItems = sort(list.items, 'itemIndex')
         const titleDisplay = <div onClick={this.toggleMode.bind(this)} style={titleStyle}>{list.listTitle}</div>
         const titleEdit =  <div><input autoFocus style={editInputStyle} onChange={this.onChange.bind(this)}
                         onKeyDown={this.handleKeyDown.bind(this)} onBlur={this.handleOnBlur.bind(this)} value={this.state.title}/></div>
@@ -136,6 +134,7 @@ const mapDispatchToProps = dispatch =>({
 
 const mapStateToProps = state => ({
   items: state.main.items,
+  boards: state.main.boards
 })
 
 const listSource = {
@@ -144,38 +143,39 @@ const listSource = {
       boardId: props.boardId,
       listId: props.listId,
       listIndex: props.list.listIndex,
-      items: props.list.items,
-      stop: false
+      items: props.list.items
     }
   }
 }
 
 const listTarget = {
   hover(props, monitor, component) {
-    console.log(props);
     if(monitor.getItemType() === 'List') {
-      if(monitor.getItem().stop) return
-      if(props.listId !== monitor.getItem().listId) monitor.getItem().stop = true
       const boardId = monitor.getItem().boardId
       const dragListId = monitor.getItem().listId
       const hoverListId = props.listId
-      if(dragListId !== hoverListId) {
+
+      if(dragListId !== hoverListId ) {
         props.actions.swapLists(boardId, dragListId, hoverListId)
       }
 
       } else if(monitor.getItemType() === 'Item'){
         if(monitor.getItem().stop) return
-        if(monitor.getItem().itemId !== props.itemId) monitor.getItem().stop = true
         const boardId = props.boardId
         const dragListId = monitor.getItem().listId
         const hoverListId = props.listId
         const dragItemId = monitor.getItem().itemId
-        const done = props.list.items && props.list.items[dragItemId]
-        if(dragListId !== hoverListId && !done) {
+        // const done = props.list.items && props.list.items[dragItemId]
+        // if(dragListId !== hoverListId && !done) {
+          monitor.getItem().stop = true
           props.actions.moveItemToList(boardId, dragListId, hoverListId, dragItemId)
-        }
+        // }
     }
   },
+  drop(props, monitor, component){
+    console.log(props.boards);
+    props.actions.saveBoard(_.find(props.boards, {id:props.boardId}).doc)
+  }
 }
 
 

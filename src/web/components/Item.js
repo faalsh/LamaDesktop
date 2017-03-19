@@ -141,6 +141,8 @@ const itemSource = {
 
 const itemTarget = {
   hover(props, monitor, component) {
+    // console.log('hi');
+    // console.log(monitor.getItem().stop);
     if(monitor.getItem().stop) return
     if(monitor.getItem().itemId !== props.itemId) monitor.getItem().stop = true
     const boardId = props.boardId
