@@ -59,7 +59,9 @@ class List extends React.Component {
 
 
     render() {
-    	const {boardId, list, listId, actions, connectDragSource, isDragging, connectDropTarget} = this.props
+    	const {boardId, list, listId, actions, connectDragSource,
+        isDragging, connectDropTarget, canDrop, isOver} = this.props
+        console.log(isOver, listId);
       const opacity = isDragging? 0.3:1
     	const style = {
         position: 'relative',
@@ -70,7 +72,7 @@ class List extends React.Component {
     		width: '200px',
     		height: '100%',
         borderRadius: '3px',
-    		backgroundColor: 'lightgrey',
+    		backgroundColor: isOver? 'grey':'lightgrey',
     		boxShadow: '0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
         cursor: 'pointer',
         order: list.listIndex
@@ -106,7 +108,7 @@ class List extends React.Component {
           justifyContent: 'space-between'
         }
 
-        const titleDisplay = <div onClick={this.toggleMode.bind(this)} style={titleStyle}>{list.listTitle} {list.listId}</div>
+        const titleDisplay = <div onClick={this.toggleMode.bind(this)} style={titleStyle}>{list.listTitle}</div>
         const titleEdit =  <div><input autoFocus style={editInputStyle} onChange={this.onChange.bind(this)}
                         onKeyDown={this.handleKeyDown.bind(this)} onBlur={this.handleOnBlur.bind(this)} value={this.state.title}/></div>
         const title = this.state.edit ? titleEdit:titleDisplay
@@ -158,8 +160,7 @@ const listTarget = {
       if(dragListId !== hoverListId ) {
         props.actions.swapLists(boardId, dragListId, hoverListId)
       }
-
-      } 
+    }
   },
   drop(props, monitor, component){
     const boardId = props.boardId
@@ -190,7 +191,10 @@ function collect(connecter, monitor) {
 }
 
 List = DragSource('List', listSource, collect)(List)
-List = DropTarget(['List', 'Item'], listTarget, connect => ({connectDropTarget: connect.dropTarget()}))(List)
+List = DropTarget(['List', 'Item'], listTarget, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver()
+}))(List)
 // List = DropTarget('Item', itemTarget, connect => ({connectDropTarget: connect.dropTarget()}))(List)
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);
