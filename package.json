@@ -7,8 +7,8 @@
     "dev": "node devServer.js",
     "electron": "webpack && electron .",
     "electron:run": "electron .",
-    "build": "webpack && electron-packager . LamaDesktop --overwrite",
-    "package": "asar pack LamaDesktop-darwin-x64/LamaDesktop.app/Contents/Resources/app LamaDesktop-darwin-x64/LamaDesktop.app/Contents/Resources/app.asar"
+    "build": "electron-packager . LamaDesktop --overwrite --ignore=/node_modules --ignore=.babelrc --ignore=.DS_Store --ignore=.travis.yml --ignore=.eslintrc --ignore=.gitignore --ignore=jshintrc --ignore=devServer.js --ignore=README.md --ignore=webpack.config.js --ignore=webpack.config.dev.js --ignore=yarn.lock",
+    "package": "asar pack LamaDesktop-darwin-x64/LamaDesktop.app/Contents/Resources/app  LamaDesktop-darwin-x64/LamaDesktop.app/Contents/Resources/app.asar"
   },
   "repository": {
     "type": "git",

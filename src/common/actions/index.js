@@ -135,17 +135,22 @@ export const deleteItem = (boardId, listId, itemId) => {
           _.remove(list.items,(item) => {
             return item.itemId === itemId
           })
-          let sortedItems = _.sortBy(list.items, 'itemIndex')
-          for (var i = 0; i < sortedItems.length; i++) {
-            sortedItems[i].itemIndex = i
-          }
-          list.items = sortedItems
+
+          list.items = updateItemsIndexes(list.items)
           db.put(board).then(() => dispatch({type: 'DELETE_ITEM'}))
           return false
         }
       })
     })
   }
+}
+
+function updateItemsIndexes(items) {
+  let sortedItems = _.sortBy(items, 'itemIndex')
+  for (var i = 0; i < sortedItems.length; i++) {
+    sortedItems[i].itemIndex = i
+  }
+  return sortedItems
 }
 
 export const toggleBoardList = () => {
