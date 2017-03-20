@@ -111,15 +111,19 @@ export const deleteList = (boardId, listId) => {
       _.remove(board.lists,(list) => {
         return list.listId === listId
       })
-      let sortedLists = _.sortBy(board.lists, 'listId')
-      for (var i = 0; i < sortedLists.length; i++) {
-        sortedLists[i].listIndex = i
-      }
-      board.lists = sortedLists
+      board.lists = updateListsIndexes(board.lists)
 
       db.put(board).then(() => dispatch({type: 'DELETE_LIST'}))
     })
   }
+}
+
+function updateListsIndexes(lists) {
+  let sortedLists = _.sortBy(lists, 'listId')
+  for (var i = 0; i < sortedLists.length; i++) {
+    sortedLists[i].listIndex = i
+  }
+  return lists
 }
 
 export const deleteItem = (boardId, listId, itemId) => {
@@ -220,19 +224,6 @@ export function updateItem(boardId, listId, itemId, itemText) {
 
 export function swapBoards(dragBoardId, hoverBoardId) {
   return {type: 'SWAP_BOARDS', payload:{dragBoardId, hoverBoardId}}
-
-  // ref.child('boards').once('value').then(snapshot => {
-  //   const boards = snapshot.val()
-  //   const dragIndex = boards[dragBoardId].boardIndex
-  //   const hoverIndex = boards[hoverBoardId].boardIndex
-  //
-  //   let updates = {}
-  //   updates['boards/'+dragBoardId+'/boardIndex'] = hoverIndex
-  //   updates['boards/'+hoverBoardId+'/boardIndex'] = dragIndex
-  //   ref.update(updates)
-  //
-  // })
-  // return {type:'SWAP_BOARDS'}
 }
 
 export function updateBoard(boardId, boardTitle) {
@@ -247,6 +238,7 @@ export function moveListToBoard(fromBoardId, toBoardId, listId) {
       _.remove(fromBoard.lists, (list) => {
         return list.listId === listId
       })
+      fromBoard.lists = updateListsIndexes(fromBoard.lists)
 
       findBoard(toBoardId).then((toBoard) => {
         movingList.listIndex = toBoard.lists.length
@@ -255,7 +247,7 @@ export function moveListToBoard(fromBoardId, toBoardId, listId) {
         _.each(movingList.items, (item) => {
           item.assignees = []
         })
-        
+
         toBoard.lists.push(movingList)
         db.bulkDocs([fromBoard, toBoard])
       })
