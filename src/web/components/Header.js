@@ -70,7 +70,7 @@ class Header extends React.Component {
 
       const Logo = () => {
         return (
-          <div style={logoStyle}>Lama</div>
+          <div style={logoStyle}>Kanban</div>
         )
       }
       let members = []

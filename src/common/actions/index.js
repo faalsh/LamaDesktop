@@ -1,7 +1,7 @@
 import PouchDB from 'pouchdb'
 import _ from 'lodash'
 import store from '../store'
-const db = new PouchDB('lama', {auto_compaction: true})
+const db = new PouchDB('kanban', {auto_compaction: true})
 
 export const registerListenter = () => {
   return dispatch => {
