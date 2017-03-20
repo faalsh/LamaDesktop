@@ -94,8 +94,16 @@ export const createItem = (boardId,listId, itemText) => {
 export const deleteBoard = (boardId) => {
 
   return dispatch => {
-    db.get(boardId).then((board) => {
-      return db.remove(board)
+    findBoard(boardId).then((board) => {
+      db.remove(board)
+      db.allDocs({include_docs:true}).then( result => {
+        let sortedBoards = _.sortBy(result.rows, 'doc.boardIndex')
+        for (var i = 0; i < sortedBoards.length; i++) {
+          sortedBoards[i] = sortedBoards[i].doc
+          sortedBoards[i].boardIndex = i
+        }
+        db.bulkDocs(sortedBoards)
+      })
     }).then(() => dispatch({type:'DELETE_BOARD'}))
   }
 }
@@ -107,6 +115,12 @@ export const deleteList = (boardId, listId) => {
       _.remove(board.lists,(list) => {
         return list.listId === listId
       })
+      let sortedLists = _.sortBy(board.lists, 'listId')
+      for (var i = 0; i < sortedLists.length; i++) {
+        sortedLists[i].listIndex = i
+      }
+      board.lists = sortedLists
+
       db.put(board).then(() => dispatch({type: 'DELETE_LIST'}))
     })
   }
@@ -121,6 +135,11 @@ export const deleteItem = (boardId, listId, itemId) => {
           _.remove(list.items,(item) => {
             return item.itemId === itemId
           })
+          let sortedItems = _.sortBy(list.items, 'itemIndex')
+          for (var i = 0; i < sortedItems.length; i++) {
+            sortedItems[i].itemIndex = i
+          }
+          list.items = sortedItems
           db.put(board).then(() => dispatch({type: 'DELETE_ITEM'}))
           return false
         }
@@ -168,38 +187,6 @@ export const moveItemToList = (boardId, dragListId, hoverListId, dragItemId, ite
 
 export const swapItems = (boardId, hoverListId, dragItemId, hoverItemId) => {
   return {type: 'SWAP_ITEMS', payload:{boardId, hoverListId, dragItemId, hoverItemId}}
-}
-
-const updateItemIndexes = (boardId, listId) => {
-  ref.child('boards').child(boardId).child('lists')
-    .child(listId).child('items').once('value').then(snapshot => {
-      let items = snapshot.val()
-      const sortedItems = _.sortBy(_.map(items,(item,itemId) => {
-        return {itemId, ...item}
-      }), 'itemIndex')
-      for(var i=0; i<sortedItems.length; i++) {
-        items[sortedItems[i].itemId].itemIndex = i
-      }
-      if(items){
-        ref.child('boards').child(boardId).child('lists')
-          .child(listId).child('items').update(items)
-      }
-    })
-}
-
-const updateListIndexes = (boardId) => {
-  ref.child('boards').child(boardId).child('lists').once('value')
-    .then(snapshot => {
-      let lists = snapshot.val()
-      let i = 0;
-      for(const listId in lists){
-        lists[listId].listIndex = i
-        i++
-      }
-      if(lists){
-        ref.child('boards').child(boardId).child('lists').update(lists)
-      }
-    })
 }
 
 export function updateList(boardId, listId, listTitle){
