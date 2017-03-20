@@ -250,6 +250,12 @@ export function moveListToBoard(fromBoardId, toBoardId, listId) {
 
       findBoard(toBoardId).then((toBoard) => {
         movingList.listIndex = toBoard.lists.length
+
+        // clean assginees
+        _.each(movingList.items, (item) => {
+          item.assignees = []
+        })
+        
         toBoard.lists.push(movingList)
         db.bulkDocs([fromBoard, toBoard])
       })
