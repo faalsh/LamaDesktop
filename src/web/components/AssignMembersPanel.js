@@ -65,12 +65,16 @@ class AssignMembersPanel extends React.Component {
         },
         label: {
           width: '100%'
+        },
+        noMembers: {
+          marginLeft: '10px',
+          fontSize: '10px'
         }
       })
         return(
         	<div className={css(styles.panel)}>
             {
-              _.map(members, (member) => {
+              members.length>0?_.map(members, (member) => {
                 const {memberId, memberName} = member
                 var checked = false
 
@@ -88,7 +92,7 @@ class AssignMembersPanel extends React.Component {
                       className={css(styles.checkbox)}/>
                   </div>
                 )
-              })
+              }):<div className={css(styles.noMembers)}>No members were added to this board. Add members to this board in order to be able to assgin them to this item</div>
             }
           </div>
         )
