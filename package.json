@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "webpack",
+    "start": "node server.js",
     "dev": "node devServer.js",
     "electron": "webpack && electron .",
     "electron:run": "electron .",
