@@ -4,7 +4,6 @@ import { StyleSheet, css } from 'aphrodite'
 class ContextMenuItem extends React.Component {
 
     render() {
-
       const styles = StyleSheet.create({
         item: {
       		fontSize: '16px',

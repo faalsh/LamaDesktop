@@ -3,10 +3,6 @@ import _ from 'lodash'
 import store from '../store'
 const db = new PouchDB('lama', {auto_compaction: true})
 
-// temp
-window.db = db
-window._ = _
-
 export const registerListenter = () => {
   return dispatch => {
     db.changes({
@@ -245,7 +241,21 @@ export function updateBoard(boardId, boardTitle) {
 }
 
 export function moveListToBoard(fromBoardId, toBoardId, listId) {
+  return dispatch => {
+    findBoard(fromBoardId).then((fromBoard) => {
+      const movingList = _.find(fromBoard.lists, {listId})
+      _.remove(fromBoard.lists, (list) => {
+        return list.listId === listId
+      })
 
+      findBoard(toBoardId).then((toBoard) => {
+        movingList.listIndex = toBoard.lists.length
+        toBoard.lists.push(movingList)
+        db.bulkDocs([fromBoard, toBoard])
+      })
+
+    }).then(() => dispatch({type:'MOVE_LIST_TO_BOARD'}))
+  }
 }
 
 function findBoard(id) {

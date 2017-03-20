@@ -8,6 +8,7 @@ import {DragSource, DropTarget} from 'react-dnd'
 import _ from 'lodash'
 import ContextMenu from './ContextMenu'
 import ContextMenuItem from './ContextMenuItem'
+import ContextMenuSubHeader from './ContextMenuSubHeader'
 
 
 class List extends React.Component {
@@ -57,9 +58,13 @@ class List extends React.Component {
       })
     }
 
+    moveBoard(toBoardId){
+      const {boardId, listId, actions} = this.props
+      actions.moveListToBoard(boardId, toBoardId, listId)
+    }
 
     render() {
-    	const {boardId, list, listId, actions, connectDragSource,
+    	const {boardId, list, listId, boards, actions, connectDragSource,
         isDragging, connectDropTarget, canDrop, isOver} = this.props
       const opacity = isDragging? 0.3:1
     	const style = {
@@ -118,7 +123,16 @@ class List extends React.Component {
               {title}
               <ContextMenu title="List Actions">
                 <ContextMenuItem onClick={this.handleDelete} itemText="Delete"/>
-                <ContextMenuItem  itemText="Move List to Board"/>
+                <hr />
+                <ContextMenuSubHeader>Move List to Board:</ContextMenuSubHeader>
+                {
+                  boards.map((board) => {
+                    return board.id !== boardId? <ContextMenuItem key={board.id}
+                      onClick={this.moveBoard.bind(this, board.id)} itemText={board.doc.boardTitle}/>:null
+
+                  })
+                }
+
               </ContextMenu>
 		        </div>
             {_.map(list.items,(item) => <Item key={item.itemId} item={item} itemId={item.itemId} listId={listId} boardId={boardId} actions={actions}/>)}
