@@ -96,7 +96,6 @@ export default function reducer(state =initialState, action){
 						for (var i = 0; i < items.length; i++) {
 							items[i].itemIndex = i
 						}
-						console.log(items);
 						return {...list, items: items}
 					} else if (list.listId === hoverListId) {
 						item.itemIndex = list.items.length

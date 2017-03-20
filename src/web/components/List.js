@@ -112,10 +112,20 @@ class List extends React.Component {
           justifyContent: 'space-between'
         }
 
+        const noBoardsStyle = {
+          marginLeft: '10px',
+          fontSize: '12px'
+        }
+
         const titleDisplay = <div onClick={this.toggleMode.bind(this)} style={titleStyle}>{list.listTitle}</div>
         const titleEdit =  <div><input autoFocus style={editInputStyle} onChange={this.onChange.bind(this)}
                         onKeyDown={this.handleKeyDown.bind(this)} onBlur={this.handleOnBlur.bind(this)} value={this.state.title}/></div>
         const title = this.state.edit ? titleEdit:titleDisplay
+
+        const boardsList = boards.map((board) => {
+          return board.id !== boardId? <ContextMenuItem key={board.id}
+                    onClick={this.moveBoard.bind(this, board.id)} itemText={board.doc.boardTitle}/>:null
+        })
 
         return connectDragSource( connectDropTarget (
 	        <div style={{...style, opacity}}>
@@ -125,12 +135,9 @@ class List extends React.Component {
                 <ContextMenuItem onClick={this.handleDelete} itemText="Delete"/>
                 <hr />
                 <ContextMenuSubHeader>Move List to Board:</ContextMenuSubHeader>
-                {
-                  boards.map((board) => {
-                    return board.id !== boardId? <ContextMenuItem key={board.id}
-                      onClick={this.moveBoard.bind(this, board.id)} itemText={board.doc.boardTitle}/>:null
 
-                  })
+                {
+                   boards.length > 1 ? boardsList: <div style={noBoardsStyle}>Empty boards list</div>
                 }
 
               </ContextMenu>

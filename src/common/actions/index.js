@@ -291,6 +291,15 @@ export function deleteMemberFromBoard(boardId, memberId) {
       _.remove(board.members, (member) => {
         return member.memberId === memberId
       })
+
+      _.each(board.lists, (list) => {
+        _.each(list.items, (item) => {
+          _.remove(item.assignees, (assignee) => {
+            return assignee.memberId === memberId
+          })
+        })
+      })
+
       db.put(board).then(() => dispatch({type: 'DELETE_MEMBER'}))
     })
   }
