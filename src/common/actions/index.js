@@ -238,8 +238,13 @@ export function swapBoards(dragBoardId, hoverBoardId) {
 }
 
 export function updateBoard(boardId, boardTitle) {
-  // ref.child('boards').child(boardId).child('boardTitle').set(boardTitle)
-  // return {type: 'UPDATE_BOARD'}
+  return dispatch => {
+    findBoard(boardId).then(board => {
+      board.boardTitle = boardTitle
+      db.put(board).then(() => dispatch({type: 'UPDATE_BOARD'}))
+    })
+
+  }
 }
 
 export function moveListToBoard(fromBoardId, toBoardId, listId) {
