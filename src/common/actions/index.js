@@ -1,7 +1,13 @@
 import PouchDB from 'pouchdb'
 import _ from 'lodash'
 import store from '../store'
+
 const db = new PouchDB('kanban', {auto_compaction: true})
+
+// const remoteDB = new PouchDB('http://localhost:5984/kanban')
+// db.sync(remoteDB, {live:true, retry: true}).on('pause', info => {
+//   console.log(info)
+// })
 
 export const registerListenter = () => {
   return dispatch => {
@@ -232,8 +238,8 @@ export function swapBoards(dragBoardId, hoverBoardId) {
 }
 
 export function updateBoard(boardId, boardTitle) {
-  ref.child('boards').child(boardId).child('boardTitle').set(boardTitle)
-  return {type: 'UPDATE_BOARD'}
+  // ref.child('boards').child(boardId).child('boardTitle').set(boardTitle)
+  // return {type: 'UPDATE_BOARD'}
 }
 
 export function moveListToBoard(fromBoardId, toBoardId, listId) {
@@ -349,5 +355,29 @@ export function deassignMemberFromItem(boardId, listId, itemId, memberId){
         }
       })
     })
+  }
+}
+
+export const importBoards = (json) => {
+  return dispatch => {
+
+    const boards = JSON.parse(json)
+    db.allDocs({include_docs:true}).then( result => {
+      const originalBoards = result.rows
+
+
+      _.each(boards, (board) => {
+        const originalBoard = _.find(originalBoards, {id: board.id})
+        if(originalBoard) {
+          board.doc._rev = originalBoard.doc._rev
+          db.put(board.doc)
+        } else {
+          delete board.doc._rev
+          db.put(board.doc)
+        }
+      })
+    })
+    dispatch({type: 'IMPORT_BOARDS'})
+
   }
 }

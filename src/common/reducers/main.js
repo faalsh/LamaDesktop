@@ -4,11 +4,8 @@ const initialState = {
 	boardListOpen: false,
 	memberListOpen: false,
 	selectedBoard: null,
-	loggedIn: false,
-	uid: null,
 	error: null,
-	emailVerified: false,
-	connected: false
+	export: ''
 }
 export default function reducer(state =initialState, action){
 	switch(action.type){
@@ -121,7 +118,6 @@ export default function reducer(state =initialState, action){
 				else return board
 			})}
 		}
-
 		default:
 			return state;
 	}

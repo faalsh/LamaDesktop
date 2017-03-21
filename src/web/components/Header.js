@@ -1,6 +1,8 @@
 import React from 'react';
 import BoardList from './BoardList'
 import MemberList from './MemberList'
+import FileSaver from 'file-saver'
+import store from '../../common/store'
 
 class Header extends React.Component {
 
@@ -8,9 +10,33 @@ class Header extends React.Component {
   handleBoardsClick(){
     this.props.actions.toggleBoardList()
   }
+
   handleMembersClick(){
     this.props.actions.toggleMemberList()
   }
+
+  handleExport() {
+    const body = JSON.stringify(store.getState().main.boards)
+    const blob = new Blob([body], {type: 'text/plain;charset=utf-8'})
+    FileSaver.saveAs(blob, 'kanban_'+Date.now()+'.text')
+  }
+
+  handleOpenFile() {
+    this.fileInput.click()
+  }
+
+  handleImport(e) {
+    const file = e.target.files[0]
+    if(file) {
+      const reader = new FileReader();
+
+      reader.onload = (f) => {
+        this.props.actions.importBoards(f.target.result)
+      }
+      reader.readAsText(file)
+    }
+  }
+
 
     render() {
       const {main, actions} = this.props
@@ -50,6 +76,9 @@ class Header extends React.Component {
         fontWeight: 'bold',
         zIndex:2
       }
+      const fileInputStyle = {
+        display:'none'
+      }
 
       const BoardsButton = () => {
         return (
@@ -67,6 +96,24 @@ class Header extends React.Component {
         )
       }
 
+      const ExportButton = () => {
+        return (
+          <div style={headerButtonStyle} onClick={this.handleExport.bind(this)}>
+            Export
+          </div>
+        )
+      }
+
+      const ImportButton = () => {
+        return (
+          <div style={headerButtonStyle} onClick={this.handleOpenFile.bind(this)}>
+            <input type="file" style={fileInputStyle} onChange={this.handleImport.bind(this)} ref={(fileInput) => {
+              this.fileInput = fileInput
+            }}/>
+            Import
+          </div>
+        )
+      }
 
       const Logo = () => {
         return (
@@ -88,6 +135,8 @@ class Header extends React.Component {
         	<div style={style}>
             <BoardsButton />
             <MembersButton />
+            <ExportButton />
+            <ImportButton />
             {
               boardListOpen? <BoardList boards={boards}
                 selectedBoard={selectedBoard}
