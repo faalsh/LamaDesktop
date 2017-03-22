@@ -386,3 +386,7 @@ export const importBoards = (json) => {
 
   }
 }
+
+export const showPrintVersion = (boardId) => {
+  return {type: 'SHOW_PRINT_VERSION'}
+}

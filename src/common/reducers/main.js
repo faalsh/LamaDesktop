@@ -5,7 +5,8 @@ const initialState = {
 	memberListOpen: false,
 	selectedBoard: null,
 	error: null,
-	export: ''
+	export: '',
+	showPrintVersion: false
 }
 export default function reducer(state =initialState, action){
 	switch(action.type){
@@ -117,6 +118,9 @@ export default function reducer(state =initialState, action){
 					return {...board, doc:{...board.doc, boardIndex: dragBoardIndex}}
 				else return board
 			})}
+		}
+		case 'SHOW_PRINT_VERSION': {
+			return {...state, showPrintVersion: !state.showPrintVersion}
 		}
 		default:
 			return state;

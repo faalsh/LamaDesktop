@@ -3,6 +3,8 @@ import BoardList from './BoardList'
 import MemberList from './MemberList'
 import FileSaver from 'file-saver'
 import store from '../../common/store'
+import { StyleSheet, css } from 'aphrodite'
+
 
 class Header extends React.Component {
 
@@ -37,52 +39,69 @@ class Header extends React.Component {
     }
   }
 
+  handleShowPrintVersion() {
+    const {actions, main} = this.props
+    actions.showPrintVersion(main.selectedBoard)
+  }
+
 
     render() {
       const {main, actions} = this.props
       const {selectedBoard, boards, memberListOpen, boardListOpen} = main
-    	const style={
-    		backgroundColor: '#026AA7',
-        height: '50px',
-        width: '100%',
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        position: 'relative',
-    	}
-      const logoStyle = {
-        marginLeft: '10px',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        textAlign: 'center',
-        marginRight: '10px',
-        width: '100%',
-        fontFamily: '"Indie Flower",cursive'
-      }
-      const headerButtonStyle = {
-        cursor: 'pointer',
-        backgroundColor: '#4c94be',
-        marginLeft: '10px',
-        width: '100px',
-        height: '30px',
-        paddingLeft: '5px',
-        paddingRight: '5px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        WebkitUserSelect:'none',
-        fontWeight: 'bold',
-        zIndex:2
-      }
-      const fileInputStyle = {
-        display:'none'
-      }
+
+      const styles = StyleSheet.create({
+        main:{
+      		backgroundColor: '#026AA7',
+          height: '50px',
+          width: '100%',
+          color: 'white',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          position: 'relative',
+      	},
+        logo: {
+          marginLeft: '10px',
+          fontSize: '24px',
+          fontWeight: 'bold',
+          textAlign: 'center',
+          marginRight: '10px',
+          width: '100%',
+          fontFamily: '"Indie Flower",cursive'
+        },
+        headerButton: {
+          cursor: 'pointer',
+          backgroundColor: '#4c94be',
+          marginLeft: '10px',
+          width: '100px',
+          height: '30px',
+          paddingLeft: '5px',
+          paddingRight: '5px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          WebkitUserSelect:'none',
+          fontWeight: 'bold',
+          zIndex:2
+        },
+        printVersion: {
+          width: '300px',
+          fontSize: '12px'
+        },
+        fileInput: {
+          display:'none'
+        },
+        noPrint: {
+          '@media print': {
+            display: 'none'
+          }
+        }
+      })
 
       const BoardsButton = () => {
         return (
-          <div style={headerButtonStyle} onClick={this.handleBoardsClick.bind(this)}>
+          <div className={css(styles.headerButton)} onClick={this.handleBoardsClick.bind(this)}>
             Boards
           </div>
         )
@@ -90,7 +109,7 @@ class Header extends React.Component {
 
       const MembersButton = () => {
         return (
-          <div style={headerButtonStyle} onClick={this.handleMembersClick.bind(this)}>
+          <div className={css(styles.headerButton)} onClick={this.handleMembersClick.bind(this)}>
             Members
           </div>
         )
@@ -98,7 +117,7 @@ class Header extends React.Component {
 
       const ExportButton = () => {
         return (
-          <div style={headerButtonStyle} onClick={this.handleExport.bind(this)}>
+          <div className={css(styles.headerButton)} onClick={this.handleExport.bind(this)}>
             Export
           </div>
         )
@@ -106,8 +125,8 @@ class Header extends React.Component {
 
       const ImportButton = () => {
         return (
-          <div style={headerButtonStyle} onClick={this.handleOpenFile.bind(this)}>
-            <input type="file" style={fileInputStyle} onChange={this.handleImport.bind(this)} ref={(fileInput) => {
+          <div className={css(styles.headerButton)} onClick={this.handleOpenFile.bind(this)}>
+            <input type="file" className={css(styles.fileInput)} onChange={this.handleImport.bind(this)} ref={(fileInput) => {
               this.fileInput = fileInput
             }}/>
             Import
@@ -115,9 +134,18 @@ class Header extends React.Component {
         )
       }
 
+      const PrintVersionButton = () => {
+        return (
+          <div className={css(styles.headerButton, styles.printVersion)} onClick={this.handleShowPrintVersion.bind(this)}>
+            Print Friendly Version
+          </div>
+        )
+      }
+
+
       const Logo = () => {
         return (
-          <div style={logoStyle}>Kanban</div>
+          <div className={css(styles.logo)}>Kanban</div>
         )
       }
       let members = []
@@ -132,11 +160,12 @@ class Header extends React.Component {
 
         return (
 
-        	<div style={style}>
+        	<div className={css(styles.main, styles.noPrint)}>
             <BoardsButton />
             <MembersButton />
             <ExportButton />
             <ImportButton />
+            <PrintVersionButton />
             {
               boardListOpen? <BoardList boards={boards}
                 selectedBoard={selectedBoard}

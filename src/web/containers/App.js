@@ -10,6 +10,7 @@ import _ from 'lodash'
 import ConnectionStatus from '../components/ConnectionStatus'
 import ErrorMessage from '../components/ErrorMessage'
 import InfoMessage from '../components/InfoMessage'
+import PrintVersion from '../components/PrintVersion'
 
 class App extends Component {
 
@@ -20,26 +21,33 @@ class App extends Component {
   }
 
   render() {
+    const {main, actions} = this.props
+
     const style = {
       fontFamily: 'Helvetica, Arial, sans-serif',
-      backgroundColor: 'rgb(0, 121, 191)',
-      position: 'fixed',
+      backgroundColor: main.showPrintVersion? 'white':'rgb(0, 121, 191)',
+      position: main.showPrintVersion? 'relative':'fixed',
       top: 0,
       bottom: 0,
       left: 0,
       right: 0,
       overflowY: 'scroll',
-      overflowX: 'scroll'
+      overflowX: 'scroll',
     }
-		const {main, actions} = this.props
     return (
 			<div style={style}>
           <div><Header main={main} actions={actions}/>
-            <div style={{display:'flex', flexDirection:'row'}}>
-              <div>
-                 {_.map(main.boards, (board)  => main.selectedBoard === board.id ? <Board key={board.id} boardId={board.id} board={board} actions={actions}/>:null)}
-              </div>
-            </div>
+            {
+              !main.showPrintVersion?
+              <div style={{display:'flex', flexDirection:'row'}}>
+                <div>
+                   {_.map(main.boards, (board)  =>
+                     main.selectedBoard === board.id ? <Board key={board.id} boardId={board.id} board={board} actions={actions}/>:null)}
+                </div>
+              </div>:<PrintVersion boards={main.boards}/>
+
+            }
+
           </div>
   			</div>
     );

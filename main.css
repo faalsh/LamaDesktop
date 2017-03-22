@@ -1,3 +1,8 @@
+html,body {
+    margin:0;
+    padding:0;
+}
+
 .createList-enter {
   transform: scale(0);
   opacity: 0.01;
