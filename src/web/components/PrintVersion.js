@@ -39,10 +39,12 @@ class Report extends React.Component {
       row: {
         border: '1px solid black',
       },
-
       cell: {
-        padding: '5px',
+        padding: '10px',
         fontWeight: 'bold'
+      },
+      task: {
+        width: '70%'
       }
     })
 
@@ -52,13 +54,12 @@ class Report extends React.Component {
 
       <div>
         {
-          boards.map(board => {
+          _.sortBy(boards, 'doc.boardIndex').map(board => {
             return (
               <div key={board.id} className={css(styles.board)} ref={(body) => this.body = body}>
-                {/* <button onClick={this.onClick.bind(this)}>Print</button> */}
                 <div className={css(styles.boardTitle)}>{board.doc.boardTitle}</div>
                 {
-                  board.doc.lists.map(list => {
+                  _.sortBy(board.doc.lists, 'listIndex').map(list => {
                     return list.items.length===0? null:(
                       <div key={list.listId}>
                         <div className={css(styles.listTitle)}>{list.listTitle}</div>
@@ -71,11 +72,11 @@ class Report extends React.Component {
                           </thead>
                           <tbody>
                             {
-                              list.items.map(item =>{
+                              _.sortBy(list.items, 'itemIndex').map(item =>{
                                 const assignees = _.map(item.assignees, 'memberName')
                                 return (
                                   <tr key={item.itemId} className={css(styles.row)}>
-                                    <td className={css(styles.cell)}>{item.itemText}</td>
+                                    <td className={css(styles.cell, styles.task)}>{item.itemText}</td>
                                     <td className={css(styles.cell)}>{assignees.join()}</td>
                                   </tr>
                                 )
