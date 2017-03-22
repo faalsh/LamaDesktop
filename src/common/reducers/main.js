@@ -120,7 +120,13 @@ export default function reducer(state =initialState, action){
 			})}
 		}
 		case 'SHOW_PRINT_VERSION': {
-			return {...state, showPrintVersion: !state.showPrintVersion}
+			let selectedBoard = state.selectedBoard
+			if(!selectedBoard && action.payload.length > 0) {
+				const firstBoard = _.find(action.payload, {doc: {boardIndex:0}})
+				selectedBoard = firstBoard.id
+			}
+
+			return {...state, showPrintVersion: !state.showPrintVersion, selectedBoard}
 		}
 		default:
 			return state;

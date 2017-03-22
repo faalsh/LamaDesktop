@@ -9,8 +9,9 @@
     "dev": "node devServer.js",
     "electron": "webpack && electron .",
     "electron:run": "electron .",
-    "build": "webpack && electron-packager . LamaDesktop --overwrite --ignore=/node_modules --ignore=.babelrc --ignore=.DS_Store --ignore=.travis.yml --ignore=.eslintrc --ignore=.gitignore --ignore=jshintrc --ignore=devServer.js --ignore=README.md --ignore=webpack.config.js --ignore=webpack.config.dev.js --ignore=yarn.lock",
-    "installer": "electron-installer-dmg LamaDesktop-darwin-x64/LamaDesktop.app LamaDesktop"
+    "build:osx": "webpack && electron-packager . LamaDesktop --overwrite --ignore=/node_modules --ignore=.babelrc --ignore=.DS_Store --ignore=.travis.yml --ignore=.eslintrc --ignore=.gitignore --ignore=jshintrc --ignore=devServer.js --ignore=README.md --ignore=webpack.config.js --ignore=webpack.config.dev.js --ignore=yarn.lock",
+    "build:windows": "webpack && electron-packager . LamaDesktop --overwrite --asar=true --platform=win32 --arch=ia32 --ignore=/node_modules --ignore=.babelrc --ignore=.DS_Store --ignore=.travis.yml --ignore=.eslintrc --ignore=.gitignore --ignore=jshintrc --ignore=devServer.js --ignore=README.md --ignore=webpack.config.js --ignore=webpack.config.dev.js --ignore=yarn.lock",
+    "installer:osx": "electron-installer-dmg LamaDesktop-darwin-x64/LamaDesktop.app LamaDesktop"
   },
   "repository": {
     "type": "git",

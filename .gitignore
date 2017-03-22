@@ -34,8 +34,9 @@ jspm_packages
 .npm
 
 # Optional REPL history
-.node_repl_history
+*.node_repl_history
 static
-.DS_Store
+*.DS_Store
 LamaDesktop-darwin-x64
-.dmg
+*.dmg
+LamaDesktop-win32-ia32

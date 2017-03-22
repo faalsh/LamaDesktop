@@ -162,10 +162,10 @@ class Header extends React.Component {
 
         	<div className={css(styles.main, styles.noPrint)}>
             <BoardsButton />
-            <MembersButton />
-            <ExportButton />
+            {main.boards && main.boards.length > 0 ? <MembersButton /> : null}
+            {main.boards && main.boards.length > 0 ? <ExportButton /> : null}
             <ImportButton />
-            <PrintVersionButton />
+            {main.boards && main.boards.length > 0 ? <PrintVersionButton /> : null}
             {
               boardListOpen? <BoardList boards={boards}
                 selectedBoard={selectedBoard}
