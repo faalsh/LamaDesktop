@@ -15,11 +15,10 @@ class CreateItem extends React.Component {
     handleClick(){
     	const {boardId, listId, actions} = this.props
     	const {title} = this.state
-        if(title !== '') {
+        if(title.trim() !== '') {
             actions.createItem(boardId, listId, title)
             this.setState({
-              title: '',
-              panelOpen: false
+              title: ''
             })
 
         }
@@ -28,14 +27,14 @@ class CreateItem extends React.Component {
         if(e.key === 'Enter') {
             const {boardId, listId, actions} = this.props
             const {title} = this.state
-            if(title !== '') {
+            if(title.trim() !== '') {
                 actions.createItem(boardId, listId, title)
                 this.setState({
-                  title: '',
-                  panelOpen: false
+                  title: ''
                 })
 
             }
+            e.preventDefault()
         } else if (e.key === 'Escape') {
             this.setState({
                 title: '',
