@@ -105,7 +105,8 @@ class Item extends React.Component {
                   })
                 }
               </div>
-              {item.itemComments !== undefined? <img src='static//comment.png' className={css(styles.commentImage)}/>:null}
+              {item.itemComments === undefined || item.itemComments.trim().length === 0?
+                null:<img src='static//comment.png' className={css(styles.commentImage)}/>}
 
 
           </div>
