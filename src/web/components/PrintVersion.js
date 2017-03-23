@@ -44,7 +44,11 @@ class Report extends React.Component {
         fontWeight: 'bold'
       },
       task: {
-        width: '70%'
+        width: '50%'
+      },
+      comment: {
+        width: '30%',
+        fontWeight: 'normal'
       }
     })
 
@@ -67,8 +71,8 @@ class Report extends React.Component {
                           <thead>
                             <tr>
                               <th className={css(styles.header)}>Task</th>
-                              <th className={css(styles.header)}>Assignee</th>
                               <th className={css(styles.header)}>Comments</th>
+                              <th className={css(styles.header)}>Assignee</th>
                             </tr>
                           </thead>
                           <tbody>
@@ -78,8 +82,8 @@ class Report extends React.Component {
                                 return (
                                   <tr key={item.itemId} className={css(styles.row)}>
                                     <td className={css(styles.cell, styles.task)}>{item.itemText}</td>
+                                    <td className={css(styles.cell, styles.comment)}>{item.itemComments}</td>
                                     <td className={css(styles.cell)}>{assignees.join()}</td>
-                                    <td className={css(styles.cell)}>{item.itemComments}</td>
                                   </tr>
                                 )
                               })
