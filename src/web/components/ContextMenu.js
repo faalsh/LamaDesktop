@@ -21,8 +21,9 @@ class ContextMenuPanel extends React.Component {
 		}
 	}
 
-	handleCloseList(){
+	handleCloseList(e){
 		this.props.onEscape()
+		e.stopPropagation()
 	}
 
 
@@ -34,7 +35,7 @@ class ContextMenuPanel extends React.Component {
 				backgroundColor: 'white',
 				width: '200px',
 				boxShadow: '0 2px 4px 0 rgba(0,0,0,0.16),0 2px 10px 0 rgba(0,0,0,0.12)',
-				zIndex: 1,
+				zIndex: 2,
 				padding: '10px'
 			},
 			title: {
@@ -86,10 +87,11 @@ class ContextMenu extends React.Component {
 			})
 		}
 
-    togglePanel(){
+    togglePanel(evt){
     	this.setState({
     		open: !this.state.open
     	})
+			evt.stopPropagation()
     }
 
     render() {
@@ -112,7 +114,6 @@ class ContextMenu extends React.Component {
 
         return(
         	<div>
-        		{/* <div className={css(styles.menuButton)} onClick={this.togglePanel}>&#8230;</div> */}
 						<div className={css(styles.menuButton)} onClick={this.togglePanel}>...</div>
         		{this.state.open ? <ContextMenuPanel title={this.props.title} onEscape={this.onEscape}>{this.props.children}</ContextMenuPanel>:null}
         	</div>

@@ -6,53 +6,39 @@ import ContextMenuSubHeader from './ContextMenuSubHeader'
 import AssignMembersPanel from './AssignMembersPanel'
 import { StyleSheet, css } from 'aphrodite'
 import _ from 'lodash'
+import ModalMenu from './ModalMenu'
 
 class Item extends React.Component {
 
   constructor(props) {
     super(props)
     this.state = {
-      text: this.props.item.itemText,
-      edit: false
+      modalOpen: false
     }
 
     this.handleDelete = this.handleDelete.bind(this)
   }
 
-  onChange(e){
+  toggleMode(e){
+    console.log('toggle');
     this.setState({
-      text: e.target.value
+      modalOpen: true
     })
   }
 
-  toggleMode(){
+  onSave(evt, itemText, itemComments){
+    const {boardId, listId, itemId, actions} = this.props
+    actions.updateItem(boardId, listId, itemId, itemText, itemComments)
     this.setState({
-      edit: !this.state.edit
+      modalOpen: false
     })
+    evt.stopPropagation()
   }
-  handleKeyDown(e){
-    if(e.key === 'Enter'){
-      const {boardId, listId, itemId, actions} = this.props
-      actions.updateItem(boardId, listId, itemId, this.state.text)
-      this.setState({
-        edit: false
-      })
-    } else if (e.key === 'Escape') {
-      this.setState({
-        edit: false
-      })
-    }
-  }
-  handleOnBlur(){
 
-      this.setState({
-        edit: false
-      })
-    }
-
-  handleDelete(){
+  handleDelete(evt){
     const {boardId, listId, itemId, actions} = this.props
     actions.deleteItem(boardId, listId, itemId)
+    evt.stopPropagation()
   }
 
     render() {
@@ -97,10 +83,9 @@ class Item extends React.Component {
           flexWrap: 'wrap'
         }
     	})
-      const textEdit = <textarea rows="3" autoFocus onChange={this.onChange.bind(this)} style={{width:'90%'}}
-                      onKeyDown={this.handleKeyDown.bind(this)} onBlur={this.handleOnBlur.bind(this)} value={this.state.text} />
+
       const textDisplay =
-          <div onClick={this.toggleMode.bind(this)} className={css(styles.itemText)}>
+          <div className={css(styles.itemText)}>
               {item.itemText}
               <div className={css(styles.assignees)}>
 
@@ -116,14 +101,21 @@ class Item extends React.Component {
 
           </div>
         return connectDragSource(connectDropTarget(
-        	<div className={css(styles.base, isDragging && styles.dragging)}>
-        		{this.state.edit? textEdit:textDisplay}
+        	<div className={css(styles.base, isDragging && styles.dragging)} onClick={this.toggleMode.bind(this)}>
+            {textDisplay}
             <ContextMenu title="Item Actions">
               <ContextMenuItem onClick={this.handleDelete} itemText="Delete"/>
               <hr />
               <ContextMenuSubHeader>Assigned Members:</ContextMenuSubHeader>
               <AssignMembersPanel boardId={boardId} listId={listId} itemId={itemId}/>
             </ContextMenu>
+
+            {this.state.modalOpen? <ModalMenu item={item} onSave={this.onSave.bind(this)} close={(evt) => {
+              this.setState({
+                modalOpen: false
+              })
+              if(evt) evt.stopPropagation()
+            }}/>:null}
         	</div>
         ))
     }
@@ -146,8 +138,6 @@ const itemTarget = {
     const dragItemId = monitor.getItem().itemId
     const hoverItemId = props.itemId
     const hoverListId = props.listId
-    // swap item not working
-    // move duplicate item
     if(dragItemId !== hoverItemId && hoverListId === dragListId) {
       props.actions.swapItems(boardId, hoverListId, dragItemId, hoverItemId)
     }

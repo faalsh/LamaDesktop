@@ -213,7 +213,7 @@ export function updateList(boardId, listId, listTitle){
   }
 }
 
-export function updateItem(boardId, listId, itemId, itemText) {
+export function updateItem(boardId, listId, itemId, itemText, itemComments) {
   return dispatch => {
     findBoard(boardId).then((board) => {
         _.each(board.lists, (list) => {
@@ -222,6 +222,7 @@ export function updateItem(boardId, listId, itemId, itemText) {
             _.each(list.items, (item) => {
               if(item.itemId === itemId) {
                 item.itemText = itemText
+                item.itemComments = itemComments
                 db.put(board).then(() => dispatch({type: 'UPDATE_ITEM'}))
                 return false
               }

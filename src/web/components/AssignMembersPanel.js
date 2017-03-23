@@ -8,16 +8,18 @@ import _ from 'lodash'
 
 class AssignMembersPanel extends React.Component {
 
-    handleSelected(boardId, listId, itemId, memberId, memberName, checked){
-
+    handleSelected(boardId, listId, itemId, memberId, memberName, checked, evt){
+console.log('selection');
       const {actions} = this.props
 
       if(checked){
         actions.deassignMemberFromItem(boardId, listId, itemId, memberId)
+
       } else {
         actions.assignMemberToItem(boardId, listId, itemId, memberId, memberName)
       }
 
+      evt.stopPropagation()
     }
 
     render() {
@@ -47,7 +49,7 @@ class AssignMembersPanel extends React.Component {
         panel: {
           display: 'flex',
           flexDirection: 'column',
-      		fontSize: '16px',
+      		fontSize: '16px'
       	},
         member: {
           display: 'flex',
