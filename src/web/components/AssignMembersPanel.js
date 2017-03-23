@@ -90,7 +90,8 @@ console.log('selection');
                     <input type="checkbox" id={memberId}
                       value={memberId}
                       checked={checked}
-                      onChange={this.handleSelected.bind(this,boardId, listId, itemId, memberId, memberName, checked)}
+                      onChange={() => {const dummy = 0}}
+                      onClick={this.handleSelected.bind(this,boardId, listId, itemId, memberId, memberName, checked)}
                       className={css(styles.checkbox)}/>
                   </div>
                 )
