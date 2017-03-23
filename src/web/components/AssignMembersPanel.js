@@ -9,7 +9,7 @@ import _ from 'lodash'
 class AssignMembersPanel extends React.Component {
 
     handleSelected(boardId, listId, itemId, memberId, memberName, checked, evt){
-console.log('selection');
+
       const {actions} = this.props
 
       if(checked){

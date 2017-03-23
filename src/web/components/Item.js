@@ -7,6 +7,7 @@ import AssignMembersPanel from './AssignMembersPanel'
 import { StyleSheet, css } from 'aphrodite'
 import _ from 'lodash'
 import ModalMenu from './ModalMenu'
+import '../assets/comment.png'
 
 class Item extends React.Component {
 
@@ -20,7 +21,6 @@ class Item extends React.Component {
   }
 
   toggleMode(e){
-    console.log('toggle');
     this.setState({
       modalOpen: true
     })
@@ -81,9 +81,16 @@ class Item extends React.Component {
           display: 'flex',
           flexDirection: 'row',
           flexWrap: 'wrap'
+        },
+        commentImage: {
+          width: '20px',
+          height: '20px',
+          marginTop: '10px',
+          opacity: 0.7
         }
     	})
 
+      console.log(item.itemComments !== undefined);
       const textDisplay =
           <div className={css(styles.itemText)}>
               {item.itemText}
@@ -98,6 +105,8 @@ class Item extends React.Component {
                   })
                 }
               </div>
+              {item.itemComments !== undefined? <img src='static//comment.png' className={css(styles.commentImage)}/>:null}
+
 
           </div>
         return connectDragSource(connectDropTarget(
