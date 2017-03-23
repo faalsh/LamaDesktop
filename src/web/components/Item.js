@@ -83,14 +83,15 @@ class Item extends React.Component {
           flexWrap: 'wrap'
         },
         commentImage: {
-          width: '20px',
-          height: '20px',
+          width: '15px',
+          height: '15px',
           marginTop: '10px',
-          opacity: 0.7
+          opacity: 0.7,
+          marginLeft: '5px',
+          marginBottom: '5px'
         }
     	})
 
-      console.log(item.itemComments !== undefined);
       const textDisplay =
           <div className={css(styles.itemText)}>
               {item.itemText}
