@@ -9,6 +9,8 @@ const db = new PouchDB('kanban', {auto_compaction: true})
 //   console.log(info)
 // })
 
+window.db = db
+
 export const registerListenter = () => {
   return dispatch => {
     db.changes({
@@ -390,4 +392,16 @@ export const importBoards = (json) => {
 
 export const showPrintVersion = (boardId) => {
   return {type: 'SHOW_PRINT_VERSION'}
+}
+
+export const toggleFilterList = () => {
+    return {type: 'TOGGLE_FILTER_LIST'}
+}
+
+export const filterByMember = (memberId) => {
+  return {type: 'FILTER_BY_MEMBER', payload: memberId}
+}
+
+export const resetFilter = () => {
+  return {type: 'RESET_FILTER'}
 }

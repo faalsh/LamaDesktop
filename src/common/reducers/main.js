@@ -1,12 +1,15 @@
 import _ from 'lodash'
 
 const initialState = {
+	memberFilter: null,
 	boardListOpen: false,
 	memberListOpen: false,
+	filterListOpen: false,
 	selectedBoard: null,
 	error: null,
 	export: '',
-	showPrintVersion: false
+	showPrintVersion: false,
+	filteredBoards: null
 }
 export default function reducer(state =initialState, action){
 	switch(action.type){
@@ -16,8 +19,47 @@ export default function reducer(state =initialState, action){
 				const firstBoard = _.find(action.payload, {doc: {boardIndex:0}})
 				selectedBoard = firstBoard.id
 			}
-      return {...state, boards:action.payload, selectedBoard}
+			let boards = action.payload
+
+      return {...state, boards, selectedBoard, filteredBoards: boards.map(board => {
+				if(board.id === selectedBoard){
+					return {...board, doc: {...board.doc, lists: board.doc.lists.map(list =>{
+						return {...list, items: list.items.filter(item => {
+							if(state.memberFilter){
+								const assignee = _.find(item.assignees, {memberId: state.memberFilter})
+								if(assignee) {
+									return {...item}
+								}
+							} else {
+								return {...item}
+							}
+						})}
+					})}}
+				} else {
+					return {...board}
+				}
+			})}
     }
+		case 'FILTER_BY_MEMBER': {
+			return {...state, memberFilter: action.payload, filteredBoards: state.boards.map(board => {
+				if(board.id === state.selectedBoard){
+					return {...board, doc: {...board.doc, lists: board.doc.lists.map(list =>{
+						return {...list, items: list.items.filter(item => {
+							const assignee = _.find(item.assignees, {memberId: action.payload})
+							if(assignee) {
+								return {...item}
+							}
+						})}
+					})}}
+				} else {
+					return {...board}
+				}
+			})}
+
+		}
+		case 'RESET_FILTER': {
+			return {...state, memberFilter: null, filteredBoards: null}
+		}
 		case 'LOGIN_STATUS': {
 			return action.payload.loggedIn?{...state, loggedIn: action.payload.loggedIn, uid: action.payload.user.uid, emailVerified: action.payload.user.emailVerified || !action.payload.user.email}:{...state, loggedIn: action.payload.loggedIn}
 		}
@@ -35,16 +77,19 @@ export default function reducer(state =initialState, action){
 			return {...state, error: action.payload.errorMessage}
 		}
 		case 'SELECT_BOARD': {
-			return {...state, selectedBoard: action.payload, boardListOpen: false}
+			return {...state, selectedBoard: action.payload, boardListOpen: false, memberFilter: null, filteredBoards: null}
 		}
     case 'CONNECTION_STATUS': {
     	return {...state, connected:action.payload}
     }
     case 'TOGGLE_BOARD_LIST': {
-    	return {...state, boardListOpen: !state.boardListOpen, memberListOpen: false}
+    	return {...state, boardListOpen: !state.boardListOpen, memberListOpen: false, filterListOpen: false}
     }
 		case 'TOGGLE_MEMBER_LIST': {
-			return {...state, memberListOpen: !state.memberListOpen, boardListOpen: false}
+			return {...state, memberListOpen: !state.memberListOpen, boardListOpen: false, filterListOpen: false}
+		}
+		case 'TOGGLE_FILTER_LIST': {
+			return {...state, filterListOpen: !state.filterListOpen, memberListOpen: false, boardListOpen: false}
 		}
     case 'CREATE_BOARD': {
     	return {...state, boardListOpen: false, selectedBoard: action.payload}

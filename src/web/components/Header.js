@@ -1,6 +1,7 @@
 import React from 'react';
 import BoardList from './BoardList'
 import MemberList from './MemberList'
+import FilterList from './FilterList'
 import FileSaver from 'file-saver'
 import store from '../../common/store'
 import { StyleSheet, css } from 'aphrodite'
@@ -15,6 +16,10 @@ class Header extends React.Component {
 
   handleMembersClick(){
     this.props.actions.toggleMemberList()
+  }
+
+  handleFilterClick(){
+    this.props.actions.toggleFilterList()
   }
 
   handleExport() {
@@ -47,7 +52,7 @@ class Header extends React.Component {
 
     render() {
       const {main, actions} = this.props
-      const {selectedBoard, boards, memberListOpen, boardListOpen} = main
+      const {selectedBoard, boards, memberListOpen, boardListOpen, filterListOpen, memberFilter} = main
 
       const styles = StyleSheet.create({
         main:{
@@ -134,6 +139,15 @@ class Header extends React.Component {
         )
       }
 
+      const FilterButton = () => {
+        return (
+          <div className={css(styles.headerButton)} onClick={this.handleFilterClick.bind(this)}>
+            Filter
+          </div>
+        )
+      }
+
+
       const PrintVersionButton = () => {
         return (
           <div className={css(styles.headerButton, styles.printVersion)} onClick={this.handleShowPrintVersion.bind(this)}>
@@ -150,7 +164,7 @@ class Header extends React.Component {
       }
       let members = []
 
-      if(memberListOpen) {
+      if(memberListOpen || filterListOpen) {
         _.map(boards, (board) => {
           if(board.id === selectedBoard){
             members = board.doc.members
@@ -163,6 +177,7 @@ class Header extends React.Component {
         	<div className={css(styles.main, styles.noPrint)}>
             <BoardsButton />
             {main.boards && main.boards.length > 0 ? <MembersButton /> : null}
+            {main.boards && main.boards.length > 0 ? <FilterButton /> : null}
             {main.boards && main.boards.length > 0 ? <ExportButton /> : null}
             <ImportButton />
             {main.boards && main.boards.length > 0 ? <PrintVersionButton /> : null}
@@ -175,6 +190,11 @@ class Header extends React.Component {
               memberListOpen? <MemberList members={members}
                 actions={actions}
                 boardId={selectedBoard}/>:null
+            }
+            {
+              filterListOpen? <FilterList members={members}
+                memberFilter={memberFilter}
+                actions={actions}/>:null
             }
             <Logo />
         	</div>

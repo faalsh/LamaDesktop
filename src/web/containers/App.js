@@ -34,6 +34,8 @@ class App extends Component {
       overflowY: 'scroll',
       overflowX: 'scroll',
     }
+
+    const boards = main.filteredBoards === null? main.boards:main.filteredBoards
     return (
 			<div style={style}>
           <div><Header main={main} actions={actions}/>
@@ -41,7 +43,7 @@ class App extends Component {
               !main.showPrintVersion?
               <div style={{display:'flex', flexDirection:'row'}}>
                 <div>
-                   {_.map(main.boards, (board)  =>
+                   {_.map(boards, (board)  =>
                      main.selectedBoard === board.id ? <Board key={board.id} boardId={board.id} board={board} actions={actions}/>:null)}
                 </div>
               </div>:<PrintVersion boards={main.boards}/>
