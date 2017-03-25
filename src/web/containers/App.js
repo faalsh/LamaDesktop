@@ -36,6 +36,7 @@ class App extends Component {
     }
 
     const boards = main.filteredBoards === null? main.boards:main.filteredBoards
+
     return (
 			<div style={style}>
           <div><Header main={main} actions={actions}/>

@@ -54,11 +54,6 @@ class Report extends React.Component {
 
     const {boards, filteredBoards} = this.props
 
-    // let myboards = boards
-    // if(filteredBoards){
-    //   myboards = filteredBoards
-    // }
-    // console.log(myboards);
     return (
 
       <div>

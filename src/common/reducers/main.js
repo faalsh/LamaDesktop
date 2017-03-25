@@ -21,24 +21,28 @@ export default function reducer(state =initialState, action){
 			}
 			let boards = action.payload
 
-      return {...state, boards, selectedBoard, filteredBoards: boards.map(board => {
-				if(board.id === selectedBoard){
-					return {...board, doc: {...board.doc, lists: board.doc.lists.map(list =>{
-						return {...list, items: list.items.filter(item => {
-							if(state.memberFilter){
-								const assignee = _.find(item.assignees, {memberId: state.memberFilter})
-								if(assignee) {
+      if (state.memberFilter) {
+				return {...state, boards, selectedBoard, filteredBoards: boards.map(board => {
+					if(board.id === selectedBoard){
+						return {...board, doc: {...board.doc, lists: board.doc.lists.map(list =>{
+							return {...list, items: list.items.filter(item => {
+								if(state.memberFilter){
+									const assignee = _.find(item.assignees, {memberId: state.memberFilter})
+									if(assignee) {
+										return {...item}
+									}
+								} else {
 									return {...item}
 								}
-							} else {
-								return {...item}
-							}
-						})}
-					})}}
-				} else {
-					return {...board}
-				}
-			})}
+							})}
+						})}}
+					} else {
+						return {...board}
+					}
+				})}
+      } else {
+				return {...state, boards, selectedBoard}
+			}
     }
 		case 'FILTER_BY_MEMBER': {
 			return {...state, memberFilter: action.payload, filteredBoards: state.boards.map(board => {
